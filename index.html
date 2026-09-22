@@ -65,27 +65,34 @@
         <main class="max-w-7xl mx-auto px-3 md:px-6 py-3">
 
             <!-- 電腦版頁籤切換 -->
-            <div class="hidden md:flex border-b border-slate-300 mb-4 bg-white rounded-t-xl px-4 pt-1 shadow-sm">
-                <button id="btnTabSeller" onclick="switchTab('seller')" class="tab-btn active px-5 py-2.5 text-sm text-slate-600 hover:text-blue-600 flex items-center gap-2">
-                    <i class="fa-solid fa-key"></i> 賣方 (屋主/開發物件)
-                </button>
-                <button id="btnTabBuyer" onclick="switchTab('buyer')" class="tab-btn px-5 py-2.5 text-sm text-slate-600 hover:text-blue-600 flex items-center gap-2">
-                    <i class="fa-solid fa-user-tag"></i> 買方 (客源/購屋需求)
-                </button>
+            <div class="hidden md:flex border-b border-slate-300 mb-4 bg-white rounded-t-xl px-4 pt-1 shadow-sm justify-between items-center">
+                <div class="flex">
+                    <button id="btnTabSeller" onclick="switchTab('seller')" class="tab-btn active px-5 py-2.5 text-sm text-slate-600 hover:text-blue-600 flex items-center gap-2">
+                        <i class="fa-solid fa-key"></i> 賣方 (屋主/開發物件)
+                    </button>
+                    <button id="btnTabBuyer" onclick="switchTab('buyer')" class="tab-btn px-5 py-2.5 text-sm text-slate-600 hover:text-blue-600 flex items-center gap-2">
+                        <i class="fa-solid fa-user-tag"></i> 買方 (客源/購屋需求)
+                    </button>
+                </div>
             </div>
 
             <!-- ==================== 1. 賣方模組 ==================== -->
             <div id="sectionSeller" class="space-y-3">
                 
                 <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-1.5 flex-1">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 flex-1 min-w-[200px]">
                             <input type="text" id="filterHousehold" oninput="renderSellers()" placeholder="🔍 搜尋戶籍地 (北屯/彰化)" class="px-3 py-2 border border-slate-300 rounded-lg text-xs w-full focus:ring-2 focus:ring-blue-500 outline-none">
                         </div>
 
-                        <button type="button" onclick="toggleSellerForm()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow-sm whitespace-nowrap">
-                            <i class="fa-solid fa-plus"></i> <span id="btnToggleSellerText">新增賣方</span>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="exportSelectedSellersCSV()" class="text-xs bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow-sm whitespace-nowrap">
+                                <i class="fa-solid fa-file-excel"></i> <span id="btnExportSellerText">匯出勾選項目 (0)</span>
+                            </button>
+                            <button type="button" onclick="toggleSellerForm()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow-sm whitespace-nowrap">
+                                <i class="fa-solid fa-plus"></i> <span id="btnToggleSellerText">新增賣方</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div id="collapsibleSellerForm" class="hidden pt-3 mt-3 border-t border-slate-100">
@@ -125,19 +132,25 @@
                 <!-- 賣方客戶列表區域 -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-3 bg-slate-50 border-b border-slate-200 font-bold text-slate-700 flex justify-between items-center text-xs">
-                        <span>賣方列表</span>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="selectAllSellers" onchange="toggleSelectAllSellers(this.checked)" class="w-4 h-4 cursor-pointer accent-blue-600">
+                            <label for="selectAllSellers" class="cursor-pointer select-none">全選 / 賣方列表</label>
+                        </div>
                         <span id="sellerCount" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">0 筆</span>
                     </div>
 
-                    <!-- 手機版卡片列表 (手機顯現) -->
+                    <!-- 手機版卡片列表 -->
                     <div id="sellerMobileCards" class="block md:hidden divide-y divide-slate-100"></div>
 
-                    <!-- 電腦版表格 (桌機顯現) -->
+                    <!-- 電腦版表格 -->
                     <div class="hidden md:block overflow-x-auto">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead class="bg-slate-100 text-slate-600 text-xs uppercase sticky top-0">
                                 <tr>
                                     <th class="p-2.5 whitespace-nowrap w-8"></th>
+                                    <th class="p-2.5 whitespace-nowrap w-8">
+                                        <input type="checkbox" id="selectAllSellersTable" onchange="toggleSelectAllSellers(this.checked)" class="w-4 h-4 cursor-pointer accent-blue-600">
+                                    </th>
                                     <th class="p-2.5 whitespace-nowrap">稱呼</th>
                                     <th class="p-2.5 whitespace-nowrap">電話</th>
                                     <th class="p-2.5 whitespace-nowrap">社區</th>
@@ -159,9 +172,15 @@
             <div id="sectionBuyer" class="space-y-3 hidden">
                 
                 <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex flex-col gap-2">
-                        <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2 flex-1 min-w-[200px]">
                             <input type="text" id="filterBuyerNeed" oninput="renderBuyers()" placeholder="🔍 搜尋需求 (如: 3房)" class="px-3 py-2 border border-slate-300 rounded-lg text-xs w-full focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="exportSelectedBuyersCSV()" class="text-xs bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow-sm whitespace-nowrap">
+                                <i class="fa-solid fa-file-excel"></i> <span id="btnExportBuyerText">匯出勾選項目 (0)</span>
+                            </button>
                             <button type="button" onclick="toggleBuyerForm()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow-sm whitespace-nowrap">
                                 <i class="fa-solid fa-plus"></i> <span id="btnToggleBuyerText">新增買方</span>
                             </button>
@@ -201,19 +220,25 @@
                 <!-- 買方客戶列表區域 -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-3 bg-slate-50 border-b border-slate-200 font-bold text-slate-700 flex justify-between items-center text-xs">
-                        <span>買方清單</span>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="selectAllBuyers" onchange="toggleSelectAllBuyers(this.checked)" class="w-4 h-4 cursor-pointer accent-emerald-600">
+                            <label for="selectAllBuyers" class="cursor-pointer select-none">全選 / 買方清單</label>
+                        </div>
                         <span id="buyerCount" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">0 筆</span>
                     </div>
 
-                    <!-- 手機版卡片列表 (手機顯現) -->
+                    <!-- 手機版卡片列表 -->
                     <div id="buyerMobileCards" class="block md:hidden divide-y divide-slate-100"></div>
 
-                    <!-- 電腦版表格 (桌機顯現) -->
+                    <!-- 電腦版表格 -->
                     <div class="hidden md:block overflow-x-auto">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead class="bg-slate-100 text-slate-600 text-xs uppercase sticky top-0">
                                 <tr>
                                     <th class="p-2.5 whitespace-nowrap w-8"></th>
+                                    <th class="p-2.5 whitespace-nowrap w-8">
+                                        <input type="checkbox" id="selectAllBuyersTable" onchange="toggleSelectAllBuyers(this.checked)" class="w-4 h-4 cursor-pointer accent-emerald-600">
+                                    </th>
                                     <th class="p-2.5 whitespace-nowrap">稱呼</th>
                                     <th class="p-2.5 whitespace-nowrap">電話</th>
                                     <th class="p-2.5 whitespace-nowrap min-w-[150px]">找屋需求</th>
@@ -325,6 +350,8 @@
     <!-- 密碼驗證與介面控制邏輯 -->
     <script>
         const CORRECT_PASS = "0605888";
+        window.selectedSellerIds = new Set();
+        window.selectedBuyerIds = new Set();
 
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('crm_authed') === 'true') {
@@ -430,6 +457,122 @@
             if (type === 'seller') document.getElementById('editSellerModal').classList.add('hidden');
             else document.getElementById('editBuyerModal').classList.add('hidden');
         }
+
+        // ==================== 勾選與匯出控制邏輯 ====================
+        function toggleSelectSeller(id, checked) {
+            if (checked) window.selectedSellerIds.add(id);
+            else window.selectedSellerIds.delete(id);
+            updateSellerExportButtonText();
+        }
+
+        function toggleSelectAllSellers(checked) {
+            const currentList = getFilteredSellers();
+            if (checked) {
+                currentList.forEach(s => window.selectedSellerIds.add(s.id));
+            } else {
+                currentList.forEach(s => window.selectedSellerIds.delete(s.id));
+            }
+            window.renderSellers();
+        }
+
+        function updateSellerExportButtonText() {
+            document.getElementById('btnExportSellerText').innerText = `匯出勾選項目 (${window.selectedSellerIds.size})`;
+        }
+
+        function exportSelectedSellersCSV() {
+            if (window.selectedSellerIds.size === 0) {
+                alert("請先勾選要匯出的賣方客戶資料！");
+                return;
+            }
+            const exportList = window.sellers.filter(s => window.selectedSellerIds.has(s.id));
+            let csvContent = "\uFEFF稱呼,電話,社區,最新狀態,聯繫/拜訪日期,房屋地址,戶籍地,參考連結,跟進紀錄數,歷史跟進內容\n";
+            exportList.forEach(s => {
+                const name = cleanCSV(s.name || '');
+                const phone = cleanCSV(s.phone || '');
+                const community = cleanCSV(s.community || '');
+                const status = cleanCSV(s.status || '');
+                const date = cleanCSV(s.date || '');
+                const address = cleanCSV(s.address || '');
+                const household = cleanCSV(s.household || '');
+                const link = cleanCSV(s.link || '');
+                const logsCount = s.logs ? s.logs.length : 0;
+                const logsContent = cleanCSV(s.logs ? s.logs.map(l => `[${l.date}] ${l.content}`).join(' | ') : '');
+
+                csvContent += `"${name}","${phone}","${community}","${status}","${date}","${address}","${household}","${link}","${logsCount}","${logsContent}"\n`;
+            });
+            downloadCSV(csvContent, `賣方勾選客戶_${new Date().toISOString().slice(0,10)}.csv`);
+        }
+
+        function toggleSelectBuyer(id, checked) {
+            if (checked) window.selectedBuyerIds.add(id);
+            else window.selectedBuyerIds.delete(id);
+            updateBuyerExportButtonText();
+        }
+
+        function toggleSelectAllBuyers(checked) {
+            const currentList = getFilteredBuyers();
+            if (checked) {
+                currentList.forEach(b => window.selectedBuyerIds.add(b.id));
+            } else {
+                currentList.forEach(b => window.selectedBuyerIds.delete(b.id));
+            }
+            window.renderBuyers();
+        }
+
+        function updateBuyerExportButtonText() {
+            document.getElementById('btnExportBuyerText').innerText = `匯出勾選項目 (${window.selectedBuyerIds.size})`;
+        }
+
+        function exportSelectedBuyersCSV() {
+            if (window.selectedBuyerIds.size === 0) {
+                alert("請先勾選要匯出的買方客戶資料！");
+                return;
+            }
+            const exportList = window.buyers.filter(b => window.selectedBuyerIds.has(b.id));
+            let csvContent = "\uFEFF稱呼,電話,找屋需求,最低預算(萬),最高預算(萬),最新狀態,聯繫日期,跟進紀錄數,歷史帶看內容\n";
+            exportList.forEach(b => {
+                const name = cleanCSV(b.name || '');
+                const phone = cleanCSV(b.phone || '');
+                const communities = cleanCSV(b.communities || '');
+                const minBudget = cleanCSV(b.minBudget || '');
+                const maxBudget = cleanCSV(b.maxBudget || '');
+                const status = cleanCSV(b.status || '');
+                const date = cleanCSV(b.date || '');
+                const logsCount = b.logs ? b.logs.length : 0;
+                const logsContent = cleanCSV(b.logs ? b.logs.map(l => `[${l.date}] ${l.content}`).join(' | ') : '');
+
+                csvContent += `"${name}","${phone}","${communities}","${minBudget}","${maxBudget}","${status}","${date}","${logsCount}","${logsContent}"\n`;
+            });
+            downloadCSV(csvContent, `買方勾選客戶_${new Date().toISOString().slice(0,10)}.csv`);
+        }
+
+        function cleanCSV(text) {
+            return text.replace(/"/g, '""');
+        }
+
+        function downloadCSV(csvContent, fileName) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function getFilteredSellers() {
+            const filterEl = document.getElementById('filterHousehold');
+            const filter = filterEl ? filterEl.value.trim().toLowerCase() : '';
+            return (window.sellers || []).filter(s => !filter || (s.household && s.household.toLowerCase().includes(filter)));
+        }
+
+        function getFilteredBuyers() {
+            const needEl = document.getElementById('filterBuyerNeed');
+            const needFilter = needEl ? needEl.value.trim().toLowerCase() : '';
+            return (window.buyers || []).filter(b => !needFilter || (b.communities && b.communities.toLowerCase().includes(needFilter)));
+        }
     </script>
 
     <!-- Firebase 雲端資料庫 SDK 模組與資料邏輯 -->
@@ -532,6 +675,7 @@
         window.deleteSeller = async function(id) {
             if(confirm('確定要刪除此賣方資料嗎？')) {
                 await deleteDoc(doc(db, "sellers", id));
+                window.selectedSellerIds.delete(id);
                 if(window.selectedSellerId === id) window.selectedSellerId = null;
             }
         };
@@ -625,6 +769,7 @@
         window.deleteBuyer = async function(id) {
             if(confirm('確定要刪除此買方資料嗎？')) {
                 await deleteDoc(doc(db, "buyers", id));
+                window.selectedBuyerIds.delete(id);
                 if(window.selectedBuyerId === id) window.selectedBuyerId = null;
             }
         };
@@ -661,8 +806,6 @@
 
         // 全局渲染賣方清單
         window.renderSellers = function() {
-            const filterEl = document.getElementById('filterHousehold');
-            const filter = filterEl ? filterEl.value.trim().toLowerCase() : '';
             const tbody = document.getElementById('sellerTableBody');
             const mobileCards = document.getElementById('sellerMobileCards');
             
@@ -670,11 +813,14 @@
             tbody.innerHTML = '';
             mobileCards.innerHTML = '';
 
-            const filteredSellers = (window.sellers || []).filter(s => !filter || (s.household && s.household.toLowerCase().includes(filter)));
+            const filteredSellers = getFilteredSellers();
             document.getElementById('sellerCount').innerText = `${filteredSellers.length} 筆`;
+            updateSellerExportButtonText();
 
             filteredSellers.forEach(s => {
                 const isSelected = s.id === window.selectedSellerId;
+                const isChecked = window.selectedSellerIds.has(s.id);
+
                 let linkHtml = '-';
                 if (s.link) {
                     linkHtml = `<a href="${s.link}" target="_blank" onclick="event.stopPropagation()" class="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 rounded hover:bg-blue-100 flex items-center gap-1 w-max">
@@ -686,19 +832,25 @@
                 let statusColorClass = 'bg-slate-100 text-slate-500 border-slate-300';
                 if (currentStatus === '已簽委託') statusColorClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
                 else if (currentStatus === '已拜訪') statusColorClass = 'bg-blue-100 text-blue-800 border-blue-300';
+                else if (currentStatus === '已調件') statusColorClass = 'bg-amber-100 text-amber-800 border-amber-300';
+                else if (currentStatus === '團隊已接') statusColorClass = 'bg-purple-100 text-purple-800 border-purple-300';
+                else if (currentStatus === '戶籍地不公開') statusColorClass = 'bg-slate-200 text-slate-700 border-slate-400';
 
                 const currentDate = s.date || '';
 
-                // --- 1. 手機版卡片模板 (加入明確的展開紀錄按鈕) ---
+                // --- 1. 手機版卡片模板 ---
                 mobileCards.innerHTML += `
                     <div class="p-3.5 space-y-2.5 ${isSelected ? 'bg-blue-50/70 border-l-4 border-blue-600' : 'bg-white'}" onclick="toggleSeller('${s.id}')">
                         <div class="flex justify-between items-start">
-                            <div>
-                                <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
-                                    <span>${s.name || '-'}</span>
-                                    <span class="text-blue-600 font-bold">(${s.community || '-'})</span>
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleSelectSeller('${s.id}', this.checked)" class="w-4 h-4 cursor-pointer accent-blue-600">
+                                <div>
+                                    <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                                        <span>${s.name || '-'}</span>
+                                        <span class="text-blue-600 font-bold">(${s.community || '-'})</span>
+                                    </div>
+                                    <div class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-[10px]"></i> ${s.phone || '-'}</div>
                                 </div>
-                                <div class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-[10px]"></i> ${s.phone || '-'}</div>
                             </div>
                             <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
                                 <button type="button" onclick="openEditModal('seller', '${s.id}')" class="text-xs text-blue-600 font-bold px-2 py-1 bg-blue-50 rounded">編輯</button>
@@ -713,6 +865,9 @@
                                     <option value="" ${currentStatus===''?'selected':''}>-- 選擇 --</option>
                                     <option value="已拜訪" ${currentStatus==='已拜訪'?'selected':''}>已拜訪</option>
                                     <option value="已簽委託" ${currentStatus==='已簽委託'?'selected':''}>已簽委託</option>
+                                    <option value="已調件" ${currentStatus==='已調件'?'selected':''}>已調件</option>
+                                    <option value="團隊已接" ${currentStatus==='團隊已接'?'selected':''}>團隊已接</option>
+                                    <option value="戶籍地不公開" ${currentStatus==='戶籍地不公開'?'selected':''}>戶籍地不公開</option>
                                 </select>
                             </div>
                             <div>
@@ -726,7 +881,6 @@
                             <div><span class="text-slate-400">戶籍:</span> ${s.household || '-'}</div>
                         </div>
 
-                        <!-- 顯眼的展開跟進按鈕 -->
                         <div class="pt-1 flex justify-between items-center text-xs text-blue-600 font-bold cursor-pointer">
                             <span class="flex items-center gap-1">
                                 <i class="fa-regular fa-comment-dots"></i> 
@@ -760,6 +914,9 @@
                         <td class="p-2.5 text-slate-400 text-xs">
                             <i class="fa-solid ${isSelected ? 'fa-chevron-down text-blue-600' : 'fa-chevron-right'}"></i>
                         </td>
+                        <td class="p-2.5" onclick="event.stopPropagation()">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSelectSeller('${s.id}', this.checked)" class="w-4 h-4 cursor-pointer accent-blue-600">
+                        </td>
                         <td class="p-2.5 font-medium whitespace-nowrap">${s.name || '-'}</td>
                         <td class="p-2.5 text-slate-500 whitespace-nowrap">${s.phone || '-'}</td>
                         <td class="p-2.5 text-blue-600 font-medium whitespace-nowrap">${s.community || '-'}</td>
@@ -768,6 +925,9 @@
                                 <option value="" ${currentStatus===''?'selected':''}>-- 請選擇 --</option>
                                 <option value="已拜訪" ${currentStatus==='已拜訪'?'selected':''}>已拜訪</option>
                                 <option value="已簽委託" ${currentStatus==='已簽委託'?'selected':''}>已簽委託</option>
+                                <option value="已調件" ${currentStatus==='已調件'?'selected':''}>已調件</option>
+                                <option value="團隊已接" ${currentStatus==='團隊已接'?'selected':''}>團隊已接</option>
+                                <option value="戶籍地不公開" ${currentStatus==='戶籍地不公開'?'selected':''}>戶籍地不公開</option>
                             </select>
                         </td>
                         <td class="p-2.5 whitespace-nowrap">
@@ -786,7 +946,7 @@
                 if (isSelected) {
                     tbody.innerHTML += `
                         <tr class="bg-blue-50/30">
-                            <td colspan="10" class="p-4 border-b border-blue-100">
+                            <td colspan="11" class="p-4 border-b border-blue-100">
                                 <div class="bg-white p-4 rounded-xl border border-blue-200 shadow-inner space-y-3">
                                     <div class="flex justify-between items-center border-b pb-2">
                                         <h4 class="font-bold text-slate-800 text-xs flex items-center gap-2">
@@ -860,8 +1020,6 @@
 
         // 全局渲染買方清單
         window.renderBuyers = function() {
-            const needEl = document.getElementById('filterBuyerNeed');
-            const needFilter = needEl ? needEl.value.trim().toLowerCase() : '';
             const tbody = document.getElementById('buyerTableBody');
             const mobileCards = document.getElementById('buyerMobileCards');
 
@@ -869,11 +1027,14 @@
             tbody.innerHTML = '';
             mobileCards.innerHTML = '';
 
-            let filteredBuyers = (window.buyers || []).filter(b => !needFilter || (b.communities && b.communities.toLowerCase().includes(needFilter)));
+            let filteredBuyers = getFilteredBuyers();
             document.getElementById('buyerCount').innerText = `${filteredBuyers.length} 筆`;
+            updateBuyerExportButtonText();
 
             filteredBuyers.forEach(b => {
                 const isSelected = b.id === window.selectedBuyerId;
+                const isChecked = window.selectedBuyerIds.has(b.id);
+
                 let budgetText = '-';
                 if (b.minBudget && b.maxBudget) budgetText = `${b.minBudget}~${b.maxBudget}萬`;
                 else if (b.maxBudget) budgetText = `最高${b.maxBudget}萬`;
@@ -887,16 +1048,19 @@
 
                 const currentDate = b.date || '';
 
-                // --- 1. 手機版卡片模板 (加入明確的展開紀錄按鈕) ---
+                // --- 1. 手機版卡片模板 ---
                 mobileCards.innerHTML += `
                     <div class="p-3.5 space-y-2.5 ${isSelected ? 'bg-emerald-50/70 border-l-4 border-emerald-600' : 'bg-white'}" onclick="toggleBuyer('${b.id}')">
                         <div class="flex justify-between items-start">
-                            <div>
-                                <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
-                                    <span>${b.name || '-'}</span>
-                                    <span class="text-emerald-600 font-bold">(${budgetText})</span>
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleSelectBuyer('${b.id}', this.checked)" class="w-4 h-4 cursor-pointer accent-emerald-600">
+                                <div>
+                                    <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                                        <span>${b.name || '-'}</span>
+                                        <span class="text-emerald-600 font-bold">(${budgetText})</span>
+                                    </div>
+                                    <div class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-[10px]"></i> ${b.phone || '-'}</div>
                                 </div>
-                                <div class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-[10px]"></i> ${b.phone || '-'}</div>
                             </div>
                             <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
                                 <button type="button" onclick="openEditModal('buyer', '${b.id}')" class="text-xs text-blue-600 font-bold px-2 py-1 bg-blue-50 rounded">編輯</button>
@@ -924,7 +1088,6 @@
                             </div>
                         </div>
 
-                        <!-- 顯眼的展開紀錄按鈕 -->
                         <div class="pt-1 flex justify-between items-center text-xs text-emerald-600 font-bold cursor-pointer">
                             <span class="flex items-center gap-1">
                                 <i class="fa-regular fa-comment-dots"></i> 
@@ -958,6 +1121,9 @@
                         <td class="p-2.5 text-slate-400 text-xs">
                             <i class="fa-solid ${isSelected ? 'fa-chevron-down text-emerald-600' : 'fa-chevron-right'}"></i>
                         </td>
+                        <td class="p-2.5" onclick="event.stopPropagation()">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSelectBuyer('${b.id}', this.checked)" class="w-4 h-4 cursor-pointer accent-emerald-600">
+                        </td>
                         <td class="p-2.5 font-medium whitespace-nowrap">${b.name || '-'}</td>
                         <td class="p-2.5 text-slate-500 whitespace-nowrap">${b.phone || '-'}</td>
                         <td class="p-2.5 text-emerald-600 font-medium whitespace-nowrap" title="${b.communities || ''}">${b.communities || '-'}</td>
@@ -983,7 +1149,7 @@
                 if (isSelected) {
                     tbody.innerHTML += `
                         <tr class="bg-emerald-50/30">
-                            <td colspan="8" class="p-4 border-b border-emerald-100">
+                            <td colspan="9" class="p-4 border-b border-emerald-100">
                                 <div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-inner space-y-3">
                                     <div class="flex justify-between items-center border-b pb-2">
                                         <h4 class="font-bold text-slate-800 text-xs flex items-center gap-2">
