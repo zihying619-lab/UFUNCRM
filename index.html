@@ -91,16 +91,16 @@
                     <div id="collapsibleSellerForm" class="hidden pt-4 mt-3 border-t border-slate-100">
                         <form id="formSeller" onsubmit="addSeller(event)" class="grid grid-cols-1 md:grid-cols-6 gap-3">
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">稱呼 *</label>
-                                <input type="text" id="sName" required placeholder="如: 林小姐" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">稱呼</label>
+                                <input type="text" id="sName" placeholder="如: 林小姐" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">電話</label>
                                 <input type="text" id="sPhone" placeholder="09xx-xxx-xxx" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">社區 *</label>
-                                <input type="text" id="sCommunity" required placeholder="如: 自在柳陽" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">社區</label>
+                                <input type="text" id="sCommunity" placeholder="如: 自在柳陽" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">房屋地址</label>
@@ -180,12 +180,12 @@
                     <div id="collapsibleBuyerForm" class="hidden pt-4 mt-3 border-t border-slate-100">
                         <form id="formBuyer" onsubmit="addBuyer(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3">
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">稱呼 *</label>
-                                <input type="text" id="bName" required placeholder="如: 陳先生" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">稱呼</label>
+                                <input type="text" id="bName" placeholder="如: 陳先生" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">電話 *</label>
-                                <input type="text" id="bPhone" required placeholder="09xx-xxx-xxx" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">電話</label>
+                                <input type="text" id="bPhone" placeholder="09xx-xxx-xxx" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">找屋需求</label>
@@ -271,7 +271,7 @@
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
                 <button type="button" onclick="closeEditModal('seller')" class="px-4 py-2 text-xs bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300">取消</button>
-                <button type="button" onclick="saveEditSeller()" class="px-4 py-2 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700">儲存變更</button>
+                <button type="button" id="btnSaveSellerEdit" onclick="window.saveEditSeller()" class="px-4 py-2 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold shadow-sm">儲存變更</button>
             </div>
         </div>
     </div>
@@ -305,12 +305,12 @@
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
                 <button type="button" onclick="closeEditModal('buyer')" class="px-4 py-2 text-xs bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300">取消</button>
-                <button type="button" onclick="saveEditBuyer()" class="px-4 py-2 text-xs bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">儲存變更</button>
+                <button type="button" id="btnSaveBuyerEdit" onclick="window.saveEditBuyer()" class="px-4 py-2 text-xs bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-bold shadow-sm">儲存變更</button>
             </div>
         </div>
     </div>
 
-    <!-- 密碼驗證邏輯 -->
+    <!-- 密碼驗證與介面控制邏輯 -->
     <script>
         const CORRECT_PASS = "0605888";
 
@@ -340,204 +340,7 @@
             localStorage.removeItem('crm_authed');
             location.reload();
         }
-    </script>
 
-    <!-- Firebase 雲端資料庫 SDK 模組 -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBn8AFGBMxgpkKtZI9OD7h9X8YamF9cHVk",
-            authDomain: "our-crm-b805c.firebaseapp.com",
-            projectId: "our-crm-b805c",
-            storageBucket: "our-crm-b805c.firebasestorage.app",
-            messagingSenderId: "850281025236",
-            appId: "1:850281025236:web:15fcaef9b5efee94eeed5c"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window.sellers = [];
-        window.buyers = [];
-        window.selectedSellerId = null;
-        window.selectedBuyerId = null;
-        window.editingSellerLogIdx = -1;
-        window.editingBuyerLogIdx = -1;
-
-        // 即時監聽賣方集合
-        onSnapshot(collection(db, "sellers"), (snapshot) => {
-            window.sellers = [];
-            snapshot.forEach(doc => window.sellers.push({ id: doc.id, ...doc.data() }));
-            renderSellers();
-        });
-
-        // 即時監聽買方集合
-        onSnapshot(collection(db, "buyers"), (snapshot) => {
-            window.buyers = [];
-            snapshot.forEach(doc => window.buyers.push({ id: doc.id, ...doc.data() }));
-            renderBuyers();
-        });
-
-        // 賣方 Firebase 操作
-        window.addSeller = async function(e) {
-            e.preventDefault();
-            const id = 's_' + Date.now();
-            const todayStr = new Date().toISOString().slice(0,10);
-            await setDoc(doc(db, "sellers", id), {
-                name: document.getElementById('sName').value,
-                phone: document.getElementById('sPhone').value,
-                community: document.getElementById('sCommunity').value,
-                address: document.getElementById('sAddress').value,
-                household: document.getElementById('sHousehold').value,
-                link: document.getElementById('sLink').value,
-                status: '',
-                date: todayStr,
-                logs: []
-            });
-            window.selectedSellerId = id;
-            document.getElementById('formSeller').reset();
-            toggleSellerForm();
-        };
-
-        window.changeSellerStatus = async function(id, newStatus) {
-            await updateDoc(doc(db, "sellers", id), { status: newStatus });
-        };
-
-        window.changeSellerDate = async function(id, newDate) {
-            await updateDoc(doc(db, "sellers", id), { date: newDate });
-        };
-
-        window.saveEditSeller = async function() {
-            const id = document.getElementById('editSellerId').value;
-            await updateDoc(doc(db, "sellers", id), {
-                name: document.getElementById('editSName').value,
-                phone: document.getElementById('editSPhone').value,
-                community: document.getElementById('editSCommunity').value,
-                address: document.getElementById('editSAddress').value,
-                household: document.getElementById('editSHousehold').value,
-                link: document.getElementById('editSLink').value
-            });
-            closeEditModal('seller');
-        };
-
-        window.deleteSeller = async function(id) {
-            if(confirm('確定要刪除此賣方資料嗎？')) {
-                await deleteDoc(doc(db, "sellers", id));
-                if(window.selectedSellerId === id) window.selectedSellerId = null;
-            }
-        };
-
-        window.saveSellerLogInline = async function(sellerId) {
-            const content = document.getElementById(`sLogInput_${sellerId}`).value.trim();
-            if (!content) return;
-            const seller = window.sellers.find(s => s.id === sellerId);
-            if (!seller) return;
-            const logs = seller.logs || [];
-
-            if (window.editingSellerLogIdx >= 0 && window.editingSellerLogIdx < logs.length) {
-                logs[window.editingSellerLogIdx].content = content;
-            } else {
-                const now = new Date();
-                const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-                logs.push({ date: timeStr, content: content });
-            }
-
-            await updateDoc(doc(db, "sellers", sellerId), { logs });
-            window.editingSellerLogIdx = -1;
-        };
-
-        window.deleteSellerLogInline = async function(sellerId, index) {
-            const seller = window.sellers.find(s => s.id === sellerId);
-            if (!seller || !seller.logs) return;
-            if (confirm('確定要刪除這筆跟進紀錄嗎？')) {
-                const logs = seller.logs;
-                logs.splice(index, 1);
-                await updateDoc(doc(db, "sellers", sellerId), { logs });
-                window.editingSellerLogIdx = -1;
-            }
-        };
-
-        // 買方 Firebase 操作
-        window.addBuyer = async function(e) {
-            e.preventDefault();
-            const id = 'b_' + Date.now();
-            const todayStr = new Date().toISOString().slice(0,10);
-            await setDoc(doc(db, "buyers", id), {
-                name: document.getElementById('bName').value,
-                phone: document.getElementById('bPhone').value,
-                communities: document.getElementById('bCommunities').value,
-                minBudget: document.getElementById('bMinBudget').value,
-                maxBudget: document.getElementById('bMaxBudget').value,
-                status: '',
-                date: todayStr,
-                logs: []
-            });
-            window.selectedBuyerId = id;
-            document.getElementById('formBuyer').reset();
-            toggleBuyerForm();
-        };
-
-        window.changeBuyerStatus = async function(id, newStatus) {
-            await updateDoc(doc(db, "buyers", id), { status: newStatus });
-        };
-
-        window.changeBuyerDate = async function(id, newDate) {
-            await updateDoc(doc(db, "buyers", id), { date: newDate });
-        };
-
-        window.saveEditBuyer = async function() {
-            const id = document.getElementById('editBuyerId').value;
-            await updateDoc(doc(db, "buyers", id), {
-                name: document.getElementById('editBName').value,
-                phone: document.getElementById('editBPhone').value,
-                communities: document.getElementById('editBCommunities').value,
-                minBudget: document.getElementById('editBMinBudget').value,
-                maxBudget: document.getElementById('editBMaxBudget').value
-            });
-            closeEditModal('buyer');
-        };
-
-        window.deleteBuyer = async function(id) {
-            if(confirm('確定要刪除此買方資料嗎？')) {
-                await deleteDoc(doc(db, "buyers", id));
-                if(window.selectedBuyerId === id) window.selectedBuyerId = null;
-            }
-        };
-
-        window.saveBuyerLogInline = async function(buyerId) {
-            const content = document.getElementById(`bLogInput_${buyerId}`).value.trim();
-            if (!content) return;
-            const buyer = window.buyers.find(b => b.id === buyerId);
-            if (!buyer) return;
-            const logs = buyer.logs || [];
-
-            if (window.editingBuyerLogIdx >= 0 && window.editingBuyerLogIdx < logs.length) {
-                logs[window.editingBuyerLogIdx].content = content;
-            } else {
-                const now = new Date();
-                const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-                logs.push({ date: timeStr, content: content });
-            }
-
-            await updateDoc(doc(db, "buyers", buyerId), { logs });
-            window.editingBuyerLogIdx = -1;
-        };
-
-        window.deleteBuyerLogInline = async function(buyerId, index) {
-            const buyer = window.buyers.find(b => b.id === buyerId);
-            if (!buyer || !buyer.logs) return;
-            if (confirm('確定要刪除這筆互動紀錄嗎？')) {
-                const logs = buyer.logs;
-                logs.splice(index, 1);
-                await updateDoc(doc(db, "buyers", buyerId), { logs });
-                window.editingBuyerLogIdx = -1;
-            }
-        };
-    </script>
-
-    <script>
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if(tab === 'seller') {
@@ -575,9 +378,278 @@
             }
         }
 
-        function renderSellers() {
-            const filter = document.getElementById('filterHousehold').value.trim().toLowerCase();
+        function openEditModal(type, id) {
+            if (type === 'seller') {
+                const s = (window.sellers || []).find(x => x.id === id);
+                if (!s) return;
+                document.getElementById('editSellerId').value = s.id;
+                document.getElementById('editSName').value = s.name === '未填寫' ? '' : (s.name || '');
+                document.getElementById('editSPhone').value = s.phone || '';
+                document.getElementById('editSCommunity').value = s.community === '未填寫' ? '' : (s.community || '');
+                document.getElementById('editSAddress').value = s.address || '';
+                document.getElementById('editSHousehold').value = s.household || '';
+                document.getElementById('editSLink').value = s.link || '';
+                document.getElementById('editSellerModal').classList.remove('hidden');
+            } else {
+                const b = (window.buyers || []).find(x => x.id === id);
+                if (!b) return;
+                document.getElementById('editBuyerId').value = b.id;
+                document.getElementById('editBName').value = b.name === '未填寫' ? '' : (b.name || '');
+                document.getElementById('editBPhone').value = b.phone || '';
+                document.getElementById('editBCommunities').value = b.communities || '';
+                document.getElementById('editBMinBudget').value = b.minBudget || '';
+                document.getElementById('editBMaxBudget').value = b.maxBudget || '';
+                document.getElementById('editBuyerModal').classList.remove('hidden');
+            }
+        }
+
+        function closeEditModal(type) {
+            if (type === 'seller') document.getElementById('editSellerModal').classList.add('hidden');
+            else document.getElementById('editBuyerModal').classList.add('hidden');
+        }
+    </script>
+
+    <!-- Firebase 雲端資料庫 SDK 模組與資料邏輯 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBn8AFGBMxgpkKtZI9OD7h9X8YamF9cHVk",
+            authDomain: "our-crm-b805c.firebaseapp.com",
+            projectId: "our-crm-b805c",
+            storageBucket: "our-crm-b805c.firebasestorage.app",
+            messagingSenderId: "850281025236",
+            appId: "1:850281025236:web:15fcaef9b5efee94eeed5c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.sellers = [];
+        window.buyers = [];
+        window.selectedSellerId = null;
+        window.selectedBuyerId = null;
+        window.editingSellerLogIdx = -1;
+        window.editingBuyerLogIdx = -1;
+
+        // 即時監聽賣方集合
+        onSnapshot(collection(db, "sellers"), (snapshot) => {
+            window.sellers = [];
+            snapshot.forEach(docSnap => window.sellers.push({ id: docSnap.id, ...docSnap.data() }));
+            window.renderSellers();
+        });
+
+        // 即時監聽買方集合
+        onSnapshot(collection(db, "buyers"), (snapshot) => {
+            window.buyers = [];
+            snapshot.forEach(docSnap => window.buyers.push({ id: docSnap.id, ...docSnap.data() }));
+            window.renderBuyers();
+        });
+
+        // 新增賣方操作
+        window.addSeller = async function(e) {
+            if(e) e.preventDefault();
+            const todayStr = new Date().toISOString().slice(0,10);
+            
+            try {
+                const docRef = await addDoc(collection(db, "sellers"), {
+                    name: document.getElementById('sName').value || '未填寫',
+                    phone: document.getElementById('sPhone').value || '',
+                    community: document.getElementById('sCommunity').value || '未填寫',
+                    address: document.getElementById('sAddress').value || '',
+                    household: document.getElementById('sHousehold').value || '',
+                    link: document.getElementById('sLink').value || '',
+                    status: '',
+                    date: todayStr,
+                    logs: []
+                });
+
+                window.selectedSellerId = docRef.id;
+                
+                // 清空賣方所有輸入框
+                document.getElementById('sName').value = '';
+                document.getElementById('sPhone').value = '';
+                document.getElementById('sCommunity').value = '';
+                document.getElementById('sAddress').value = '';
+                document.getElementById('sHousehold').value = '';
+                document.getElementById('sLink').value = '';
+                
+                toggleSellerForm();
+            } catch(err) {
+                alert("儲存失敗：" + err.message);
+            }
+        };
+
+        window.changeSellerStatus = async function(id, newStatus) {
+            await setDoc(doc(db, "sellers", id), { status: newStatus }, { merge: true });
+        };
+
+        window.changeSellerDate = async function(id, newDate) {
+            await setDoc(doc(db, "sellers", id), { date: newDate }, { merge: true });
+        };
+
+        // 儲存修改賣方 (改用 setDoc merge，確保 100% 寫入不卡住)
+        window.saveEditSeller = function() {
+            const id = document.getElementById('editSellerId').value;
+            if (!id) return;
+
+            const updateData = {
+                name: document.getElementById('editSName').value || '未填寫',
+                phone: document.getElementById('editSPhone').value || '',
+                community: document.getElementById('editSCommunity').value || '未填寫',
+                address: document.getElementById('editSAddress').value || '',
+                household: document.getElementById('editSHousehold').value || '',
+                link: document.getElementById('editSLink').value || ''
+            };
+
+            // 使用背景同步寫入，不阻塞彈窗關閉
+            setDoc(doc(db, "sellers", id), updateData, { merge: true });
+            
+            // 立即關閉 Modal，交由 onSnapshot 即時刷新
+            closeEditModal('seller');
+        };
+
+        window.deleteSeller = async function(id) {
+            if(confirm('確定要刪除此賣方資料嗎？')) {
+                await deleteDoc(doc(db, "sellers", id));
+                if(window.selectedSellerId === id) window.selectedSellerId = null;
+            }
+        };
+
+        window.saveSellerLogInline = async function(sellerId) {
+            const content = document.getElementById(`sLogInput_${sellerId}`).value.trim();
+            if (!content) return;
+            const seller = window.sellers.find(s => s.id === sellerId);
+            if (!seller) return;
+            const logs = seller.logs || [];
+
+            if (window.editingSellerLogIdx >= 0 && window.editingSellerLogIdx < logs.length) {
+                logs[window.editingSellerLogIdx].content = content;
+            } else {
+                const now = new Date();
+                const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+                logs.push({ date: timeStr, content: content });
+            }
+
+            await setDoc(doc(db, "sellers", sellerId), { logs }, { merge: true });
+            window.editingSellerLogIdx = -1;
+        };
+
+        window.deleteSellerLogInline = async function(sellerId, index) {
+            const seller = window.sellers.find(s => s.id === sellerId);
+            if (!seller || !seller.logs) return;
+            if (confirm('確定要刪除這筆跟進紀錄嗎？')) {
+                const logs = seller.logs;
+                logs.splice(index, 1);
+                await setDoc(doc(db, "sellers", sellerId), { logs }, { merge: true });
+                window.editingSellerLogIdx = -1;
+            }
+        };
+
+        // 新增買方操作
+        window.addBuyer = async function(e) {
+            if(e) e.preventDefault();
+            const todayStr = new Date().toISOString().slice(0,10);
+
+            try {
+                const docRef = await addDoc(collection(db, "buyers"), {
+                    name: document.getElementById('bName').value || '未填寫',
+                    phone: document.getElementById('bPhone').value || '',
+                    communities: document.getElementById('bCommunities').value || '',
+                    minBudget: document.getElementById('bMinBudget').value || '',
+                    maxBudget: document.getElementById('bMaxBudget').value || '',
+                    status: '',
+                    date: todayStr,
+                    logs: []
+                });
+
+                window.selectedBuyerId = docRef.id;
+
+                // 清空買方所有輸入框
+                document.getElementById('bName').value = '';
+                document.getElementById('bPhone').value = '';
+                document.getElementById('bCommunities').value = '';
+                document.getElementById('bMinBudget').value = '';
+                document.getElementById('bMaxBudget').value = '';
+
+                toggleBuyerForm();
+            } catch(err) {
+                alert("儲存失敗：" + err.message);
+            }
+        };
+
+        window.changeBuyerStatus = async function(id, newStatus) {
+            await setDoc(doc(db, "buyers", id), { status: newStatus }, { merge: true });
+        };
+
+        window.changeBuyerDate = async function(id, newDate) {
+            await setDoc(doc(db, "buyers", id), { date: newDate }, { merge: true });
+        };
+
+        // 儲存修改買方 (改用 setDoc merge，確保 100% 寫入不卡住)
+        window.saveEditBuyer = function() {
+            const id = document.getElementById('editBuyerId').value;
+            if (!id) return;
+
+            const updateData = {
+                name: document.getElementById('editBName').value || '未填寫',
+                phone: document.getElementById('editBPhone').value || '',
+                communities: document.getElementById('editBCommunities').value || '',
+                minBudget: document.getElementById('editBMinBudget').value || '',
+                maxBudget: document.getElementById('editBMaxBudget').value || ''
+            };
+
+            // 使用背景同步寫入，不阻塞彈窗關閉
+            setDoc(doc(db, "buyers", id), updateData, { merge: true });
+            
+            // 立即關閉 Modal，交由 onSnapshot 即時刷新
+            closeEditModal('buyer');
+        };
+
+        window.deleteBuyer = async function(id) {
+            if(confirm('確定要刪除此買方資料嗎？')) {
+                await deleteDoc(doc(db, "buyers", id));
+                if(window.selectedBuyerId === id) window.selectedBuyerId = null;
+            }
+        };
+
+        window.saveBuyerLogInline = async function(buyerId) {
+            const content = document.getElementById(`bLogInput_${buyerId}`).value.trim();
+            if (!content) return;
+            const buyer = window.buyers.find(b => b.id === buyerId);
+            if (!buyer) return;
+            const logs = buyer.logs || [];
+
+            if (window.editingBuyerLogIdx >= 0 && window.editingBuyerLogIdx < logs.length) {
+                logs[window.editingBuyerLogIdx].content = content;
+            } else {
+                const now = new Date();
+                const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+                logs.push({ date: timeStr, content: content });
+            }
+
+            await setDoc(doc(db, "buyers", buyerId), { logs }, { merge: true });
+            window.editingBuyerLogIdx = -1;
+        };
+
+        window.deleteBuyerLogInline = async function(buyerId, index) {
+            const buyer = window.buyers.find(b => b.id === buyerId);
+            if (!buyer || !buyer.logs) return;
+            if (confirm('確定要刪除這筆互動紀錄嗎？')) {
+                const logs = buyer.logs;
+                logs.splice(index, 1);
+                await setDoc(doc(db, "buyers", buyerId), { logs }, { merge: true });
+                window.editingBuyerLogIdx = -1;
+            }
+        };
+
+        // 全局渲染賣方清單
+        window.renderSellers = function() {
+            const filterEl = document.getElementById('filterHousehold');
+            const filter = filterEl ? filterEl.value.trim().toLowerCase() : '';
             const tbody = document.getElementById('sellerTableBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             const filteredSellers = (window.sellers || []).filter(s => !filter || (s.household && s.household.toLowerCase().includes(filter)));
@@ -604,9 +676,9 @@
                         <td class="p-2.5 text-slate-400 text-xs">
                             <i class="fa-solid ${isSelected ? 'fa-chevron-down text-blue-600' : 'fa-chevron-right'}"></i>
                         </td>
-                        <td class="p-2.5 font-medium whitespace-nowrap">${s.name}</td>
+                        <td class="p-2.5 font-medium whitespace-nowrap">${s.name || '-'}</td>
                         <td class="p-2.5 text-slate-500 whitespace-nowrap">${s.phone || '-'}</td>
-                        <td class="p-2.5 text-blue-600 font-medium whitespace-nowrap">${s.community}</td>
+                        <td class="p-2.5 text-blue-600 font-medium whitespace-nowrap">${s.community || '-'}</td>
                         <td class="p-2.5 whitespace-nowrap">
                             <select onclick="event.stopPropagation()" onchange="changeSellerStatus('${s.id}', this.value)" class="text-xs font-bold px-2 py-1 rounded border outline-none cursor-pointer ${statusColorClass}">
                                 <option value="" ${currentStatus===''?'selected':''}>-- 請選擇 --</option>
@@ -658,7 +730,7 @@
                     `;
                 }
             });
-        }
+        };
 
         function renderSellerLogsInlineHtml(seller) {
             if (!seller.logs || seller.logs.length === 0) {
@@ -683,13 +755,13 @@
             return html;
         }
 
-        function toggleSeller(id) {
+        window.toggleSeller = function(id) {
             window.selectedSellerId = window.selectedSellerId === id ? null : id;
             window.editingSellerLogIdx = -1;
-            renderSellers();
-        }
+            window.renderSellers();
+        };
 
-        function startEditSellerLogInline(sellerId, index) {
+        window.startEditSellerLogInline = function(sellerId, index) {
             const seller = window.sellers.find(s => s.id === sellerId);
             if (!seller || !seller.logs[index]) return;
 
@@ -699,19 +771,25 @@
             document.getElementById(`btnSaveSLog_${sellerId}`).innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 儲存修改內容';
             document.getElementById(`btnCancelSLog_${sellerId}`).classList.remove('hidden');
             input.focus();
-        }
+        };
 
-        function cancelSellerLogEditInline(sellerId) {
+        window.cancelSellerLogEditInline = function(sellerId) {
             window.editingSellerLogIdx = -1;
-            renderSellers();
-        }
+            window.renderSellers();
+        };
 
-        function renderBuyers() {
-            const needFilter = document.getElementById('filterBuyerNeed').value.trim().toLowerCase();
-            const minPriceFilter = parseFloat(document.getElementById('filterBuyerMinPrice').value);
-            const maxPriceFilter = parseFloat(document.getElementById('filterBuyerMaxPrice').value);
+        // 全局渲染買方清單
+        window.renderBuyers = function() {
+            const needEl = document.getElementById('filterBuyerNeed');
+            const minEl = document.getElementById('filterBuyerMinPrice');
+            const maxEl = document.getElementById('filterBuyerMaxPrice');
+
+            const needFilter = needEl ? needEl.value.trim().toLowerCase() : '';
+            const minPriceFilter = minEl ? parseFloat(minEl.value) : NaN;
+            const maxPriceFilter = maxEl ? parseFloat(maxEl.value) : NaN;
 
             const tbody = document.getElementById('buyerTableBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             let filteredBuyers = (window.buyers || []).filter(b => {
@@ -747,8 +825,8 @@
                         <td class="p-2.5 text-slate-400 text-xs">
                             <i class="fa-solid ${isSelected ? 'fa-chevron-down text-emerald-600' : 'fa-chevron-right'}"></i>
                         </td>
-                        <td class="p-2.5 font-medium whitespace-nowrap">${b.name}</td>
-                        <td class="p-2.5 text-slate-500 whitespace-nowrap">${b.phone}</td>
+                        <td class="p-2.5 font-medium whitespace-nowrap">${b.name || '-'}</td>
+                        <td class="p-2.5 text-slate-500 whitespace-nowrap">${b.phone || '-'}</td>
                         <td class="p-2.5 text-emerald-600 font-medium whitespace-nowrap" title="${b.communities || ''}">${b.communities || '-'}</td>
                         <td class="p-2.5 text-xs text-slate-700 font-bold whitespace-nowrap">${budgetText}</td>
                         <td class="p-2.5 whitespace-nowrap">
@@ -800,7 +878,7 @@
                     `;
                 }
             });
-        }
+        };
 
         function renderBuyerLogsInlineHtml(buyer) {
             if (!buyer.logs || buyer.logs.length === 0) {
@@ -825,13 +903,13 @@
             return html;
         }
 
-        function toggleBuyer(id) {
+        window.toggleBuyer = function(id) {
             window.selectedBuyerId = window.selectedBuyerId === id ? null : id;
             window.editingBuyerLogIdx = -1;
-            renderBuyers();
-        }
+            window.renderBuyers();
+        };
 
-        function startEditBuyerLogInline(buyerId, index) {
+        window.startEditBuyerLogInline = function(buyerId, index) {
             const buyer = window.buyers.find(b => b.id === buyerId);
             if (!buyer || !buyer.logs[index]) return;
 
@@ -841,49 +919,19 @@
             document.getElementById(`btnSaveBLog_${buyerId}`).innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 儲存修改內容';
             document.getElementById(`btnCancelBLog_${buyerId}`).classList.remove('hidden');
             input.focus();
-        }
+        };
 
-        function cancelBuyerLogEditInline(buyerId) {
+        window.cancelBuyerLogEditInline = function(buyerId) {
             window.editingBuyerLogIdx = -1;
-            renderBuyers();
-        }
+            window.renderBuyers();
+        };
 
-        function clearBuyerFilters() {
+        window.clearBuyerFilters = function() {
             document.getElementById('filterBuyerNeed').value = '';
             document.getElementById('filterBuyerMinPrice').value = '';
             document.getElementById('filterBuyerMaxPrice').value = '';
-            renderBuyers();
-        }
-
-        function openEditModal(type, id) {
-            if (type === 'seller') {
-                const s = window.sellers.find(x => x.id === id);
-                if (!s) return;
-                document.getElementById('editSellerId').value = s.id;
-                document.getElementById('editSName').value = s.name || '';
-                document.getElementById('editSPhone').value = s.phone || '';
-                document.getElementById('editSCommunity').value = s.community || '';
-                document.getElementById('editSAddress').value = s.address || '';
-                document.getElementById('editSHousehold').value = s.household || '';
-                document.getElementById('editSLink').value = s.link || '';
-                document.getElementById('editSellerModal').classList.remove('hidden');
-            } else {
-                const b = window.buyers.find(x => x.id === id);
-                if (!b) return;
-                document.getElementById('editBuyerId').value = b.id;
-                document.getElementById('editBName').value = b.name || '';
-                document.getElementById('editBPhone').value = b.phone || '';
-                document.getElementById('editBCommunities').value = b.communities || '';
-                document.getElementById('editBMinBudget').value = b.minBudget || '';
-                document.getElementById('editBMaxBudget').value = b.maxBudget || '';
-                document.getElementById('editBuyerModal').classList.remove('hidden');
-            }
-        }
-
-        function closeEditModal(type) {
-            if (type === 'seller') document.getElementById('editSellerModal').classList.add('hidden');
-            else document.getElementById('editBuyerModal').classList.add('hidden');
-        }
+            window.renderBuyers();
+        };
     </script>
 </body>
 </html>
