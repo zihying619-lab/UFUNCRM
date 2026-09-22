@@ -2,10 +2,10 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- 禁止搜尋引擎索引與爬取 -->
     <meta name="robots" content="noindex, nofollow">
-    <title>房產 CRM 客戶管理系統 (安全密碼版)</title>
+    <title>房產 CRM 客戶管理系統 (手機優化版)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome 圖示套件 -->
@@ -13,9 +13,11 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", "Segoe UI", Roboto, sans-serif; }
         .tab-btn.active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: bold; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800">
+<body class="bg-slate-100 min-h-screen text-slate-800 pb-20 md:pb-6">
 
     <!-- 密碼驗證彈出視窗 (密碼: 0605888) -->
     <div id="authModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
@@ -29,10 +31,10 @@
             </div>
             <form onsubmit="verifyPassword(event)" class="space-y-3">
                 <div>
-                    <input type="password" id="passInput" required placeholder="請輸入密碼" class="w-full px-4 py-2.5 border rounded-xl text-center text-base tracking-widest focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="password" id="passInput" required placeholder="請輸入密碼" class="w-full px-4 py-3 border rounded-xl text-center text-base tracking-widest focus:ring-2 focus:ring-blue-500 outline-none">
                     <p id="passError" class="text-xs text-red-500 font-semibold mt-1.5 hidden"><i class="fa-solid fa-circle-exclamation"></i> 密碼錯誤，請重新輸入！</p>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-sm transition-all shadow-md">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">
                     確認解鎖
                 </button>
             </form>
@@ -42,28 +44,28 @@
     <!-- 主要系統介面 (預設隱藏，解鎖後顯示) -->
     <div id="appContent" class="hidden">
         <!-- 上方導覽列 -->
-        <header class="bg-slate-900 text-white shadow-md">
-            <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-                <h1 class="text-lg font-bold tracking-wide flex items-center gap-2">
+        <header class="bg-slate-900 text-white shadow-md sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+                <h1 class="text-base md:text-lg font-bold tracking-wide flex items-center gap-2">
                     <i class="fa-solid fa-house-chimney text-blue-400"></i>
-                    房產 CRM 客戶管理系統
+                    房產 CRM 管理系統
                 </h1>
-                <div class="flex items-center gap-3">
-                    <span class="text-xs bg-emerald-600 text-white px-3 py-1 rounded-full flex items-center gap-1 shadow-sm font-semibold">
-                        <i class="fa-solid fa-wifi text-[10px]"></i> 雲端即時同步中
+                <div class="flex items-center gap-2">
+                    <span class="text-[11px] bg-emerald-600 text-white px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm font-semibold">
+                        <i class="fa-solid fa-wifi text-[9px]"></i> 同步中
                     </span>
-                    <button onclick="logoutPass()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700 flex items-center gap-1" title="鎖定系統">
-                        <i class="fa-solid fa-lock text-[10px]"></i> 鎖定
+                    <button onclick="logoutPass()" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-lg border border-slate-700 flex items-center gap-1" title="鎖定系統">
+                        <i class="fa-solid fa-lock text-[9px]"></i> 鎖定
                     </button>
                 </div>
             </div>
         </header>
 
         <!-- 主要內容區 -->
-        <main class="max-w-7xl mx-auto px-6 py-4">
+        <main class="max-w-7xl mx-auto px-3 md:px-6 py-3">
 
-            <!-- 頁籤切換 (賣方 vs 買方) -->
-            <div class="flex border-b border-slate-300 mb-4 bg-white rounded-t-xl px-4 pt-1 shadow-sm">
+            <!-- 電腦版頁籤切換 -->
+            <div class="hidden md:flex border-b border-slate-300 mb-4 bg-white rounded-t-xl px-4 pt-1 shadow-sm">
                 <button id="btnTabSeller" onclick="switchTab('seller')" class="tab-btn active px-5 py-2.5 text-sm text-slate-600 hover:text-blue-600 flex items-center gap-2">
                     <i class="fa-solid fa-key"></i> 賣方 (屋主/開發物件)
                 </button>
@@ -73,64 +75,65 @@
             </div>
 
             <!-- ==================== 1. 賣方模組 ==================== -->
-            <div id="sectionSeller" class="space-y-4">
+            <div id="sectionSeller" class="space-y-3">
                 
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-slate-700 whitespace-nowrap"><i class="fa-solid fa-filter text-blue-500"></i> 戶籍地篩選：</span>
-                            <input type="text" id="filterHousehold" oninput="renderSellers()" placeholder="輸入關鍵字 (如: 北屯、彰化)" class="px-3 py-1 border border-slate-300 rounded-lg text-xs w-48 focus:ring-2 focus:ring-blue-500 outline-none">
-                            <button onclick="document.getElementById('filterHousehold').value=''; renderSellers();" class="text-xs text-slate-400 hover:text-slate-700 underline">清除</button>
+                <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 flex-1">
+                            <input type="text" id="filterHousehold" oninput="renderSellers()" placeholder="🔍 搜尋戶籍地 (北屯/彰化)" class="px-3 py-2 border border-slate-300 rounded-lg text-xs w-full focus:ring-2 focus:ring-blue-500 outline-none">
                         </div>
 
-                        <button type="button" onclick="toggleSellerForm()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1 shadow-sm">
-                            <i class="fa-solid fa-plus"></i> <span id="btnToggleSellerText">新增賣方資料</span>
+                        <button type="button" onclick="toggleSellerForm()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow-sm whitespace-nowrap">
+                            <i class="fa-solid fa-plus"></i> <span id="btnToggleSellerText">新增賣方</span>
                         </button>
                     </div>
 
-                    <div id="collapsibleSellerForm" class="hidden pt-4 mt-3 border-t border-slate-100">
-                        <form id="formSeller" onsubmit="addSeller(event)" class="grid grid-cols-1 md:grid-cols-6 gap-3">
+                    <div id="collapsibleSellerForm" class="hidden pt-3 mt-3 border-t border-slate-100">
+                        <form id="formSeller" onsubmit="addSeller(event)" class="grid grid-cols-1 md:grid-cols-6 gap-2.5">
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">稱呼</label>
-                                <input type="text" id="sName" placeholder="如: 林小姐" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="text" id="sName" placeholder="如: 林小姐" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">電話</label>
-                                <input type="text" id="sPhone" placeholder="09xx-xxx-xxx" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="tel" id="sPhone" placeholder="09xx-xxx-xxx" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">社區</label>
-                                <input type="text" id="sCommunity" placeholder="如: 自在柳陽" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="text" id="sCommunity" placeholder="如: 自在柳陽" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">房屋地址</label>
-                                <input type="text" id="sAddress" placeholder="台中市北屯區..." class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="text" id="sAddress" placeholder="台中市北屯區..." class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">戶籍地</label>
-                                <input type="text" id="sHousehold" placeholder="彰化縣社頭鄉..." class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="text" id="sHousehold" placeholder="彰化縣社頭鄉..." class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">參考連結</label>
-                                <input type="url" id="sLink" placeholder="591/網址..." class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="url" id="sLink" placeholder="591/網址..." class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
-                            <div class="md:col-span-6 flex justify-end gap-2 pt-1">
-                                <button type="button" onclick="toggleSellerForm()" class="px-3 py-1.5 text-xs bg-slate-200 text-slate-600 rounded-lg hover:bg-slate-300">取消</button>
-                                <button type="submit" class="bg-blue-600 text-white px-5 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700 shadow-sm">儲存送出</button>
+                            <div class="md:col-span-6 flex justify-end gap-2 pt-2">
+                                <button type="button" onclick="toggleSellerForm()" class="px-4 py-2 text-xs bg-slate-200 text-slate-600 rounded-lg">取消</button>
+                                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-xs font-semibold shadow-sm">儲存送出</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
+                <!-- 賣方客戶列表區域 -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-3 bg-slate-50 border-b border-slate-200 font-bold text-slate-700 flex justify-between items-center text-xs">
-                        <span class="flex items-center gap-2">
-                            <span class="text-sm">賣方客戶清單</span>
-                            <span class="font-normal text-slate-400">(點擊欄位可於下方展開/收合歷史紀錄)</span>
-                        </span>
+                        <span>賣方列表</span>
                         <span id="sellerCount" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">0 筆</span>
                     </div>
-                    <div class="overflow-x-auto">
+
+                    <!-- 手機版卡片列表 (手機顯現) -->
+                    <div id="sellerMobileCards" class="block md:hidden divide-y divide-slate-100"></div>
+
+                    <!-- 電腦版表格 (桌機顯現) -->
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead class="bg-slate-100 text-slate-600 text-xs uppercase sticky top-0">
                                 <tr>
@@ -153,69 +156,60 @@
             </div>
 
             <!-- ==================== 2. 買方模組 ==================== -->
-            <div id="sectionBuyer" class="space-y-4 hidden">
+            <div id="sectionBuyer" class="space-y-3 hidden">
                 
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <span class="text-xs font-bold text-slate-700 whitespace-nowrap"><i class="fa-solid fa-filter text-emerald-500"></i> 買方快速篩選：</span>
-                            <div class="flex items-center gap-1 text-xs">
-                                <span class="text-slate-500">需求:</span>
-                                <input type="text" id="filterBuyerNeed" oninput="renderBuyers()" placeholder="如: 3房" class="px-2.5 py-1 border border-slate-300 rounded-lg text-xs w-32 focus:ring-2 focus:ring-emerald-500 outline-none">
-                            </div>
-                            <div class="flex items-center gap-1 text-xs">
-                                <span class="text-slate-500">預算(萬):</span>
-                                <input type="number" id="filterBuyerMinPrice" oninput="renderBuyers()" placeholder="最低" class="px-2 py-1 border border-slate-300 rounded-lg text-xs w-20 focus:ring-2 focus:ring-emerald-500 outline-none">
-                                <span class="text-slate-400">~</span>
-                                <input type="number" id="filterBuyerMaxPrice" oninput="renderBuyers()" placeholder="最高" class="px-2 py-1 border border-slate-300 rounded-lg text-xs w-20 focus:ring-2 focus:ring-emerald-500 outline-none">
-                            </div>
-                            <button onclick="clearBuyerFilters()" class="text-xs text-slate-400 hover:text-slate-700 underline">清除</button>
+                <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="filterBuyerNeed" oninput="renderBuyers()" placeholder="🔍 搜尋需求 (如: 3房)" class="px-3 py-2 border border-slate-300 rounded-lg text-xs w-full focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <button type="button" onclick="toggleBuyerForm()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow-sm whitespace-nowrap">
+                                <i class="fa-solid fa-plus"></i> <span id="btnToggleBuyerText">新增買方</span>
+                            </button>
                         </div>
-
-                        <button type="button" onclick="toggleBuyerForm()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1 shadow-sm">
-                            <i class="fa-solid fa-plus"></i> <span id="btnToggleBuyerText">新增買方需求</span>
-                        </button>
                     </div>
 
-                    <div id="collapsibleBuyerForm" class="hidden pt-4 mt-3 border-t border-slate-100">
-                        <form id="formBuyer" onsubmit="addBuyer(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <div id="collapsibleBuyerForm" class="hidden pt-3 mt-3 border-t border-slate-100">
+                        <form id="formBuyer" onsubmit="addBuyer(event)" class="grid grid-cols-1 md:grid-cols-5 gap-2.5">
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">稱呼</label>
-                                <input type="text" id="bName" placeholder="如: 陳先生" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <input type="text" id="bName" placeholder="如: 陳先生" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">電話</label>
-                                <input type="text" id="bPhone" placeholder="09xx-xxx-xxx" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <input type="tel" id="bPhone" placeholder="09xx-xxx-xxx" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">找屋需求</label>
-                                <input type="text" id="bCommunities" placeholder="如: 3房電梯、自在柳陽" class="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <input type="text" id="bCommunities" placeholder="如: 3房電梯、自在柳陽" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-slate-600 mb-1">預算區間 (萬)</label>
                                 <div class="flex items-center gap-1">
-                                    <input type="number" id="bMinBudget" placeholder="最低" class="w-full px-1.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <input type="number" id="bMinBudget" placeholder="最低" class="w-full px-2 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                                     <span class="text-slate-400 text-xs">~</span>
-                                    <input type="number" id="bMaxBudget" placeholder="最高" class="w-full px-1.5 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <input type="number" id="bMaxBudget" placeholder="最高" class="w-full px-2 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none">
                                 </div>
                             </div>
-                            <div class="flex items-end justify-end gap-2">
-                                <button type="button" onclick="toggleBuyerForm()" class="px-3 py-1.5 text-xs bg-slate-200 text-slate-600 rounded-lg hover:bg-slate-300">取消</button>
-                                <button type="submit" class="bg-emerald-600 text-white px-5 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-700 shadow-sm">儲存送出</button>
+                            <div class="flex items-end justify-end gap-2 pt-2">
+                                <button type="button" onclick="toggleBuyerForm()" class="px-4 py-2 text-xs bg-slate-200 text-slate-600 rounded-lg">取消</button>
+                                <button type="submit" class="bg-emerald-600 text-white px-6 py-2 rounded-lg text-xs font-semibold shadow-sm">儲存送出</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
+                <!-- 買方客戶列表區域 -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-3 bg-slate-50 border-b border-slate-200 font-bold text-slate-700 flex justify-between items-center text-xs">
-                        <span class="flex items-center gap-2">
-                            <span class="text-sm">買方客源清單</span>
-                            <span class="font-normal text-slate-400">(點擊欄位可於下方展開/收合歷史紀錄)</span>
-                        </span>
+                        <span>買方清單</span>
                         <span id="buyerCount" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">0 筆</span>
                     </div>
-                    <div class="overflow-x-auto">
+
+                    <!-- 手機版卡片列表 (手機顯現) -->
+                    <div id="buyerMobileCards" class="block md:hidden divide-y divide-slate-100"></div>
+
+                    <!-- 電腦版表格 (桌機顯現) -->
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead class="bg-slate-100 text-slate-600 text-xs uppercase sticky top-0">
                                 <tr>
@@ -236,76 +230,94 @@
             </div>
 
         </main>
+
+        <!-- 手機專用底部固定切換列 -->
+        <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around items-center py-2 z-40 shadow-lg">
+            <button id="mobileTabSeller" onclick="switchTab('seller')" class="flex flex-col items-center gap-1 text-blue-600 font-bold text-xs">
+                <i class="fa-solid fa-key text-base"></i>
+                <span>賣方客戶</span>
+            </button>
+            <button id="mobileTabBuyer" onclick="switchTab('buyer')" class="flex flex-col items-center gap-1 text-slate-400 text-xs">
+                <i class="fa-solid fa-user-tag text-base"></i>
+                <span>買方需求</span>
+            </button>
+        </div>
     </div>
 
     <!-- 編輯賣方 Modal -->
-    <div id="editSellerModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800 border-b pb-2">修改賣方資料</h3>
+    <div id="editSellerModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-end md:items-center justify-center p-0 md:p-4 z-50">
+        <div class="bg-white rounded-t-2xl md:rounded-xl shadow-xl max-w-lg w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-base font-bold text-slate-800">修改賣方資料</h3>
+                <button onclick="closeEditModal('seller')" class="text-slate-400 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
             <input type="hidden" id="editSellerId">
-            <div class="grid grid-cols-2 gap-3 text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">稱呼</label>
-                    <input type="text" id="editSName" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="editSName" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-xs">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">電話</label>
-                    <input type="text" id="editSPhone" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="tel" id="editSPhone" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-xs">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">社區</label>
-                    <input type="text" id="editSCommunity" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="editSCommunity" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-xs">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">參考連結</label>
-                    <input type="url" id="editSLink" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="url" id="editSLink" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-xs">
                 </div>
-                <div class="col-span-2">
+                <div class="md:col-span-2">
                     <label class="block text-xs font-semibold text-slate-600 mb-1">房屋地址</label>
-                    <input type="text" id="editSAddress" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="editSAddress" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-xs">
                 </div>
-                <div class="col-span-2">
+                <div class="md:col-span-2">
                     <label class="block text-xs font-semibold text-slate-600 mb-1">戶籍地</label>
-                    <input type="text" id="editSHousehold" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="editSHousehold" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 text-xs">
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
-                <button type="button" onclick="closeEditModal('seller')" class="px-4 py-2 text-xs bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300">取消</button>
-                <button type="button" id="btnSaveSellerEdit" onclick="window.saveEditSeller()" class="px-4 py-2 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold shadow-sm">儲存變更</button>
+                <button type="button" onclick="closeEditModal('seller')" class="px-4 py-2 text-xs bg-slate-200 text-slate-700 rounded-lg">取消</button>
+                <button type="button" id="btnSaveSellerEdit" onclick="window.saveEditSeller()" class="px-5 py-2 text-xs bg-blue-600 text-white rounded-lg font-bold shadow-sm">儲存變更</button>
             </div>
         </div>
     </div>
 
     <!-- 編輯買方 Modal -->
-    <div id="editBuyerModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-slate-800 border-b pb-2">修改買方需求資料</h3>
+    <div id="editBuyerModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-end md:items-center justify-center p-0 md:p-4 z-50">
+        <div class="bg-white rounded-t-2xl md:rounded-xl shadow-xl max-w-lg w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-base font-bold text-slate-800">修改買方需求資料</h3>
+                <button onclick="closeEditModal('buyer')" class="text-slate-400 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
             <input type="hidden" id="editBuyerId">
-            <div class="grid grid-cols-2 gap-3 text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">稱呼</label>
-                    <input type="text" id="editBName" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="editBName" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">電話</label>
-                    <input type="text" id="editBPhone" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="tel" id="editBPhone" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
                 </div>
-                <div class="col-span-2">
+                <div class="md:col-span-2">
                     <label class="block text-xs font-semibold text-slate-600 mb-1">找屋需求</label>
-                    <input type="text" id="editBCommunities" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="editBCommunities" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">最低預算 (萬)</label>
-                    <input type="number" id="editBMinBudget" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="number" id="editBMinBudget" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">最高預算 (萬)</label>
-                    <input type="number" id="editBMaxBudget" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="number" id="editBMaxBudget" class="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
-                <button type="button" onclick="closeEditModal('buyer')" class="px-4 py-2 text-xs bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300">取消</button>
-                <button type="button" id="btnSaveBuyerEdit" onclick="window.saveEditBuyer()" class="px-4 py-2 text-xs bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-bold shadow-sm">儲存變更</button>
+                <button type="button" onclick="closeEditModal('buyer')" class="px-4 py-2 text-xs bg-slate-200 text-slate-700 rounded-lg">取消</button>
+                <button type="button" id="btnSaveBuyerEdit" onclick="window.saveEditBuyer()" class="px-5 py-2 text-xs bg-emerald-600 text-white rounded-lg font-bold shadow-sm">儲存變更</button>
             </div>
         </div>
     </div>
@@ -343,14 +355,25 @@
 
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const mobileSellerBtn = document.getElementById('mobileTabSeller');
+            const mobileBuyerBtn = document.getElementById('mobileTabBuyer');
+
             if(tab === 'seller') {
-                document.getElementById('btnTabSeller').classList.add('active');
+                const desktopBtn = document.getElementById('btnTabSeller');
+                if(desktopBtn) desktopBtn.classList.add('active');
                 document.getElementById('sectionSeller').classList.remove('hidden');
                 document.getElementById('sectionBuyer').classList.add('hidden');
+                
+                mobileSellerBtn.className = "flex flex-col items-center gap-1 text-blue-600 font-bold text-xs";
+                mobileBuyerBtn.className = "flex flex-col items-center gap-1 text-slate-400 text-xs";
             } else {
-                document.getElementById('btnTabBuyer').classList.add('active');
+                const desktopBtn = document.getElementById('btnTabBuyer');
+                if(desktopBtn) desktopBtn.classList.add('active');
                 document.getElementById('sectionBuyer').classList.remove('hidden');
                 document.getElementById('sectionSeller').classList.add('hidden');
+
+                mobileSellerBtn.className = "flex flex-col items-center gap-1 text-slate-400 text-xs";
+                mobileBuyerBtn.className = "flex flex-col items-center gap-1 text-emerald-600 font-bold text-xs";
             }
         }
 
@@ -359,10 +382,10 @@
             const btnText = document.getElementById('btnToggleSellerText');
             if (form.classList.contains('hidden')) {
                 form.classList.remove('hidden');
-                btnText.innerText = '收合表單';
+                btnText.innerText = '收合';
             } else {
                 form.classList.add('hidden');
-                btnText.innerText = '新增賣方資料';
+                btnText.innerText = '新增賣方';
             }
         }
 
@@ -371,10 +394,10 @@
             const btnText = document.getElementById('btnToggleBuyerText');
             if (form.classList.contains('hidden')) {
                 form.classList.remove('hidden');
-                btnText.innerText = '收合表單';
+                btnText.innerText = '收合';
             } else {
                 form.classList.add('hidden');
-                btnText.innerText = '新增買方需求';
+                btnText.innerText = '新增買方';
             }
         }
 
@@ -467,7 +490,6 @@
 
                 window.selectedSellerId = docRef.id;
                 
-                // 清空賣方所有輸入框
                 document.getElementById('sName').value = '';
                 document.getElementById('sPhone').value = '';
                 document.getElementById('sCommunity').value = '';
@@ -489,7 +511,7 @@
             await setDoc(doc(db, "sellers", id), { date: newDate }, { merge: true });
         };
 
-        // 儲存修改賣方 (改用 setDoc merge，確保 100% 寫入不卡住)
+        // 儲存修改賣方
         window.saveEditSeller = function() {
             const id = document.getElementById('editSellerId').value;
             if (!id) return;
@@ -503,10 +525,7 @@
                 link: document.getElementById('editSLink').value || ''
             };
 
-            // 使用背景同步寫入，不阻塞彈窗關閉
             setDoc(doc(db, "sellers", id), updateData, { merge: true });
-            
-            // 立即關閉 Modal，交由 onSnapshot 即時刷新
             closeEditModal('seller');
         };
 
@@ -566,7 +585,6 @@
 
                 window.selectedBuyerId = docRef.id;
 
-                // 清空買方所有輸入框
                 document.getElementById('bName').value = '';
                 document.getElementById('bPhone').value = '';
                 document.getElementById('bCommunities').value = '';
@@ -587,7 +605,7 @@
             await setDoc(doc(db, "buyers", id), { date: newDate }, { merge: true });
         };
 
-        // 儲存修改買方 (改用 setDoc merge，確保 100% 寫入不卡住)
+        // 儲存修改買方
         window.saveEditBuyer = function() {
             const id = document.getElementById('editBuyerId').value;
             if (!id) return;
@@ -600,10 +618,7 @@
                 maxBudget: document.getElementById('editBMaxBudget').value || ''
             };
 
-            // 使用背景同步寫入，不阻塞彈窗關閉
             setDoc(doc(db, "buyers", id), updateData, { merge: true });
-            
-            // 立即關閉 Modal，交由 onSnapshot 即時刷新
             closeEditModal('buyer');
         };
 
@@ -649,8 +664,11 @@
             const filterEl = document.getElementById('filterHousehold');
             const filter = filterEl ? filterEl.value.trim().toLowerCase() : '';
             const tbody = document.getElementById('sellerTableBody');
-            if (!tbody) return;
+            const mobileCards = document.getElementById('sellerMobileCards');
+            
+            if (!tbody || !mobileCards) return;
             tbody.innerHTML = '';
+            mobileCards.innerHTML = '';
 
             const filteredSellers = (window.sellers || []).filter(s => !filter || (s.household && s.household.toLowerCase().includes(filter)));
             document.getElementById('sellerCount').innerText = `${filteredSellers.length} 筆`;
@@ -659,8 +677,8 @@
                 const isSelected = s.id === window.selectedSellerId;
                 let linkHtml = '-';
                 if (s.link) {
-                    linkHtml = `<a href="${s.link}" target="_blank" onclick="event.stopPropagation()" class="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 rounded hover:bg-blue-100 flex items-center gap-1 w-max whitespace-nowrap">
-                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> 開啟連結
+                    linkHtml = `<a href="${s.link}" target="_blank" onclick="event.stopPropagation()" class="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 rounded hover:bg-blue-100 flex items-center gap-1 w-max">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> 連結
                     </a>`;
                 }
 
@@ -671,6 +689,72 @@
 
                 const currentDate = s.date || '';
 
+                // --- 1. 手機版卡片模板 (加入明確的展開紀錄按鈕) ---
+                mobileCards.innerHTML += `
+                    <div class="p-3.5 space-y-2.5 ${isSelected ? 'bg-blue-50/70 border-l-4 border-blue-600' : 'bg-white'}" onclick="toggleSeller('${s.id}')">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                                    <span>${s.name || '-'}</span>
+                                    <span class="text-blue-600 font-bold">(${s.community || '-'})</span>
+                                </div>
+                                <div class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-[10px]"></i> ${s.phone || '-'}</div>
+                            </div>
+                            <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
+                                <button type="button" onclick="openEditModal('seller', '${s.id}')" class="text-xs text-blue-600 font-bold px-2 py-1 bg-blue-50 rounded">編輯</button>
+                                <button type="button" onclick="deleteSeller('${s.id}')" class="text-xs text-red-500 px-2 py-1 bg-red-50 rounded">刪除</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-100">
+                            <div>
+                                <span class="text-slate-400">狀態:</span>
+                                <select onclick="event.stopPropagation()" onchange="changeSellerStatus('${s.id}', this.value)" class="text-xs font-bold px-1.5 py-0.5 rounded border outline-none ${statusColorClass}">
+                                    <option value="" ${currentStatus===''?'selected':''}>-- 選擇 --</option>
+                                    <option value="已拜訪" ${currentStatus==='已拜訪'?'selected':''}>已拜訪</option>
+                                    <option value="已簽委託" ${currentStatus==='已簽委託'?'selected':''}>已簽委託</option>
+                                </select>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">日期:</span>
+                                <input type="date" value="${currentDate}" onclick="event.stopPropagation()" onchange="changeSellerDate('${s.id}', this.value)" class="text-xs p-0.5 border rounded border-slate-300 outline-none text-slate-600">
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-slate-600 space-y-0.5">
+                            <div><span class="text-slate-400">地址:</span> ${s.address || '-'}</div>
+                            <div><span class="text-slate-400">戶籍:</span> ${s.household || '-'}</div>
+                        </div>
+
+                        <!-- 顯眼的展開跟進按鈕 -->
+                        <div class="pt-1 flex justify-between items-center text-xs text-blue-600 font-bold cursor-pointer">
+                            <span class="flex items-center gap-1">
+                                <i class="fa-regular fa-comment-dots"></i> 
+                                ${isSelected ? '收合跟進紀錄' : '點此展開跟進歷史紀錄 / 新增狀況'}
+                            </span>
+                            <i class="fa-solid ${isSelected ? 'fa-chevron-up' : 'fa-chevron-down'} text-slate-400"></i>
+                        </div>
+
+                        ${isSelected ? `
+                            <div class="mt-2 pt-3 border-t border-blue-200 bg-white p-3 rounded-xl space-y-2" onclick="event.stopPropagation()">
+                                <div class="font-bold text-xs text-blue-600 flex items-center justify-between">
+                                    <span>互動與跟進歷史紀錄</span>
+                                    <button onclick="toggleSeller('${s.id}')" class="text-slate-400 text-xs">收合</button>
+                                </div>
+                                <textarea id="sLogInput_${s.id}" rows="2" placeholder="輸入這次跟進狀況 (如: 現場拜訪屋主，討論底價)..." class="w-full p-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                                <div class="flex justify-end gap-2">
+                                    <button type="button" id="btnCancelSLog_${s.id}" onclick="cancelSellerLogEditInline('${s.id}')" class="hidden text-xs bg-slate-200 text-slate-700 px-3 py-1 rounded-lg">取消</button>
+                                    <button type="button" id="btnSaveSLog_${s.id}" onclick="saveSellerLogInline('${s.id}')" class="bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">新增跟進紀錄</button>
+                                </div>
+                                <div class="space-y-1.5 max-h-[180px] overflow-y-auto pt-1">
+                                    ${renderSellerLogsInlineHtml(s)}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                // --- 2. 電腦版表格模板 ---
                 tbody.innerHTML += `
                     <tr class="hover:bg-blue-50/50 cursor-pointer ${isSelected ? 'bg-blue-50/80 font-semibold' : ''}" onclick="toggleSeller('${s.id}')">
                         <td class="p-2.5 text-slate-400 text-xs">
@@ -706,21 +790,17 @@
                                 <div class="bg-white p-4 rounded-xl border border-blue-200 shadow-inner space-y-3">
                                     <div class="flex justify-between items-center border-b pb-2">
                                         <h4 class="font-bold text-slate-800 text-xs flex items-center gap-2">
-                                            <i class="fa-regular fa-clock text-blue-600"></i> ${s.name} (${s.community}) - 互動與跟進歷史紀錄
+                                            <i class="fa-regular fa-clock text-blue-600"></i> ${s.name} (${s.community}) - 跟進歷史紀錄
                                         </h4>
-                                        <button onclick="toggleSeller('${s.id}')" class="text-xs text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i> 收合</button>
+                                        <button onclick="toggleSeller('${s.id}')" class="text-xs text-slate-400 hover:text-slate-600">收合</button>
                                     </div>
-
                                     <div class="space-y-2">
-                                        <textarea id="sLogInput_${s.id}" rows="2" placeholder="輸入這次跟進狀況 (如: 現場拜訪屋主，討論底價與委託細節)..." class="w-full p-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                                        <textarea id="sLogInput_${s.id}" rows="2" placeholder="輸入這次跟進狀況..." class="w-full p-2 border rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
                                         <div class="flex gap-2 justify-end">
-                                            <button type="button" id="btnCancelSLog_${s.id}" onclick="cancelSellerLogEditInline('${s.id}')" class="hidden text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-lg">取消修改</button>
-                                            <button type="button" id="btnSaveSLog_${s.id}" onclick="saveSellerLogInline('${s.id}')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-4 py-1 rounded-lg">
-                                                <i class="fa-solid fa-check"></i> 新增跟進紀錄
-                                            </button>
+                                            <button type="button" id="btnCancelSLog_${s.id}" onclick="cancelSellerLogEditInline('${s.id}')" class="hidden text-xs bg-slate-200 text-slate-700 px-3 py-1 rounded-lg">取消</button>
+                                            <button type="button" id="btnSaveSLog_${s.id}" onclick="saveSellerLogInline('${s.id}')" class="bg-slate-800 text-white text-xs font-semibold px-4 py-1 rounded-lg">新增跟進紀錄</button>
                                         </div>
                                     </div>
-
                                     <div class="space-y-2 max-h-[220px] overflow-y-auto pt-1">
                                         ${renderSellerLogsInlineHtml(s)}
                                     </div>
@@ -734,21 +814,21 @@
 
         function renderSellerLogsInlineHtml(seller) {
             if (!seller.logs || seller.logs.length === 0) {
-                return `<div class="text-xs text-slate-400 text-center py-3">目前尚無跟進紀錄，可於上方輸入框新增</div>`;
+                return `<div class="text-xs text-slate-400 text-center py-2">目前尚無紀錄，可於上方輸入框新增</div>`;
             }
             let html = '';
             seller.logs.slice().reverse().forEach((log, revIdx) => {
                 const originalIndex = seller.logs.length - 1 - revIdx;
                 html += `
-                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs">
+                    <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="text-slate-400 font-medium"><i class="fa-regular fa-clock"></i> ${log.date}</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> ${log.date}</span>
                             <div class="flex gap-2">
-                                <button type="button" onclick="startEditSellerLogInline('${seller.id}', ${originalIndex})" class="text-[11px] text-blue-600 hover:underline font-bold">編輯</button>
-                                <button type="button" onclick="deleteSellerLogInline('${seller.id}', ${originalIndex})" class="text-[11px] text-red-500 hover:underline">刪除</button>
+                                <button type="button" onclick="startEditSellerLogInline('${seller.id}', ${originalIndex})" class="text-[11px] text-blue-600 font-bold">編輯</button>
+                                <button type="button" onclick="deleteSellerLogInline('${seller.id}', ${originalIndex})" class="text-[11px] text-red-500">刪除</button>
                             </div>
                         </div>
-                        <div class="text-slate-700 leading-relaxed break-words">${log.content}</div>
+                        <div class="text-slate-700 break-words">${log.content}</div>
                     </div>
                 `;
             });
@@ -768,7 +848,7 @@
             window.editingSellerLogIdx = index;
             const input = document.getElementById(`sLogInput_${sellerId}`);
             input.value = seller.logs[index].content;
-            document.getElementById(`btnSaveSLog_${sellerId}`).innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 儲存修改內容';
+            document.getElementById(`btnSaveSLog_${sellerId}`).innerText = '儲存修改';
             document.getElementById(`btnCancelSLog_${sellerId}`).classList.remove('hidden');
             input.focus();
         };
@@ -781,36 +861,23 @@
         // 全局渲染買方清單
         window.renderBuyers = function() {
             const needEl = document.getElementById('filterBuyerNeed');
-            const minEl = document.getElementById('filterBuyerMinPrice');
-            const maxEl = document.getElementById('filterBuyerMaxPrice');
-
             const needFilter = needEl ? needEl.value.trim().toLowerCase() : '';
-            const minPriceFilter = minEl ? parseFloat(minEl.value) : NaN;
-            const maxPriceFilter = maxEl ? parseFloat(maxEl.value) : NaN;
-
             const tbody = document.getElementById('buyerTableBody');
-            if (!tbody) return;
+            const mobileCards = document.getElementById('buyerMobileCards');
+
+            if (!tbody || !mobileCards) return;
             tbody.innerHTML = '';
+            mobileCards.innerHTML = '';
 
-            let filteredBuyers = (window.buyers || []).filter(b => {
-                if (needFilter && (!b.communities || !b.communities.toLowerCase().includes(needFilter))) return false;
-                if (!isNaN(minPriceFilter) && minPriceFilter > 0) {
-                    if (!b.maxBudget || parseFloat(b.maxBudget) < minPriceFilter) return false;
-                }
-                if (!isNaN(maxPriceFilter) && maxPriceFilter > 0) {
-                    if (!b.minBudget || parseFloat(b.minBudget) > maxPriceFilter) return false;
-                }
-                return true;
-            });
-
+            let filteredBuyers = (window.buyers || []).filter(b => !needFilter || (b.communities && b.communities.toLowerCase().includes(needFilter)));
             document.getElementById('buyerCount').innerText = `${filteredBuyers.length} 筆`;
 
             filteredBuyers.forEach(b => {
                 const isSelected = b.id === window.selectedBuyerId;
                 let budgetText = '-';
-                if (b.minBudget && b.maxBudget) budgetText = `${b.minBudget} ~ ${b.maxBudget} 萬`;
-                else if (b.maxBudget) budgetText = `最高 ${b.maxBudget} 萬`;
-                else if (b.minBudget) budgetText = `最低 ${b.minBudget} 萬`;
+                if (b.minBudget && b.maxBudget) budgetText = `${b.minBudget}~${b.maxBudget}萬`;
+                else if (b.maxBudget) budgetText = `最高${b.maxBudget}萬`;
+                else if (b.minBudget) budgetText = `最低${b.minBudget}萬`;
 
                 const currentStatus = b.status || '';
                 let statusColorClass = 'bg-slate-100 text-slate-500 border-slate-300';
@@ -820,6 +887,72 @@
 
                 const currentDate = b.date || '';
 
+                // --- 1. 手機版卡片模板 (加入明確的展開紀錄按鈕) ---
+                mobileCards.innerHTML += `
+                    <div class="p-3.5 space-y-2.5 ${isSelected ? 'bg-emerald-50/70 border-l-4 border-emerald-600' : 'bg-white'}" onclick="toggleBuyer('${b.id}')">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                                    <span>${b.name || '-'}</span>
+                                    <span class="text-emerald-600 font-bold">(${budgetText})</span>
+                                </div>
+                                <div class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-[10px]"></i> ${b.phone || '-'}</div>
+                            </div>
+                            <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
+                                <button type="button" onclick="openEditModal('buyer', '${b.id}')" class="text-xs text-blue-600 font-bold px-2 py-1 bg-blue-50 rounded">編輯</button>
+                                <button type="button" onclick="deleteBuyer('${b.id}')" class="text-xs text-red-500 px-2 py-1 bg-red-50 rounded">刪除</button>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-emerald-700 font-medium">
+                            <span class="text-slate-400">需求:</span> ${b.communities || '-'}
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-100">
+                            <div>
+                                <span class="text-slate-400">狀態:</span>
+                                <select onclick="event.stopPropagation()" onchange="changeBuyerStatus('${b.id}', this.value)" class="text-xs font-bold px-1.5 py-0.5 rounded border outline-none ${statusColorClass}">
+                                    <option value="" ${currentStatus===''?'selected':''}>-- 選擇 --</option>
+                                    <option value="已加line" ${currentStatus==='已加line'?'selected':''}>已加line</option>
+                                    <option value="已有電話" ${currentStatus==='已有電話'?'selected':''}>已有電話</option>
+                                    <option value="暫無需求" ${currentStatus==='暫無需求'?'selected':''}>暫無需求</option>
+                                </select>
+                            </div>
+                            <div>
+                                <span class="text-slate-400">日期:</span>
+                                <input type="date" value="${currentDate}" onclick="event.stopPropagation()" onchange="changeBuyerDate('${b.id}', this.value)" class="text-xs p-0.5 border rounded border-slate-300 outline-none text-slate-600">
+                            </div>
+                        </div>
+
+                        <!-- 顯眼的展開紀錄按鈕 -->
+                        <div class="pt-1 flex justify-between items-center text-xs text-emerald-600 font-bold cursor-pointer">
+                            <span class="flex items-center gap-1">
+                                <i class="fa-regular fa-comment-dots"></i> 
+                                ${isSelected ? '收合帶看紀錄' : '點此展開帶看歷史紀錄 / 新增狀況'}
+                            </span>
+                            <i class="fa-solid ${isSelected ? 'fa-chevron-up' : 'fa-chevron-down'} text-slate-400"></i>
+                        </div>
+
+                        ${isSelected ? `
+                            <div class="mt-2 pt-3 border-t border-emerald-200 bg-white p-3 rounded-xl space-y-2" onclick="event.stopPropagation()">
+                                <div class="font-bold text-xs text-emerald-600 flex items-center justify-between">
+                                    <span>互動帶看歷史紀錄</span>
+                                    <button onclick="toggleBuyer('${b.id}')" class="text-slate-400 text-xs">收合</button>
+                                </div>
+                                <textarea id="bLogInput_${b.id}" rows="2" placeholder="輸入帶看狀況..." class="w-full p-2 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+                                <div class="flex justify-end gap-2">
+                                    <button type="button" id="btnCancelBLog_${b.id}" onclick="cancelBuyerLogEditInline('${b.id}')" class="hidden text-xs bg-slate-200 text-slate-700 px-3 py-1 rounded-lg">取消</button>
+                                    <button type="button" id="btnSaveBLog_${b.id}" onclick="saveBuyerLogInline('${b.id}')" class="bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">新增紀錄</button>
+                                </div>
+                                <div class="space-y-1.5 max-h-[180px] overflow-y-auto pt-1">
+                                    ${renderBuyerLogsInlineHtml(b)}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                // --- 2. 電腦版表格模板 ---
                 tbody.innerHTML += `
                     <tr class="hover:bg-emerald-50/50 cursor-pointer ${isSelected ? 'bg-emerald-50/80 font-semibold' : ''}" onclick="toggleBuyer('${b.id}')">
                         <td class="p-2.5 text-slate-400 text-xs">
@@ -854,21 +987,17 @@
                                 <div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-inner space-y-3">
                                     <div class="flex justify-between items-center border-b pb-2">
                                         <h4 class="font-bold text-slate-800 text-xs flex items-center gap-2">
-                                            <i class="fa-solid fa-comments text-emerald-600"></i> ${b.name} - 帶看與互動歷史紀錄
+                                            <i class="fa-solid fa-comments text-emerald-600"></i> ${b.name} - 互動帶看紀錄
                                         </h4>
-                                        <button onclick="toggleBuyer('${b.id}')" class="text-xs text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i> 收合</button>
+                                        <button onclick="toggleBuyer('${b.id}')" class="text-xs text-slate-400 hover:text-slate-600">收合</button>
                                     </div>
-
                                     <div class="space-y-2">
-                                        <textarea id="bLogInput_${b.id}" rows="2" placeholder="輸入這次互動或帶看狀況 (如: 帶看自在柳陽12樓，或 Line 討論預算)..." class="w-full p-2 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+                                        <textarea id="bLogInput_${b.id}" rows="2" placeholder="輸入帶看狀況..." class="w-full p-2 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
                                         <div class="flex gap-2 justify-end">
-                                            <button type="button" id="btnCancelBLog_${b.id}" onclick="cancelBuyerLogEditInline('${b.id}')" class="hidden text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-lg">取消修改</button>
-                                            <button type="button" id="btnSaveBLog_${b.id}" onclick="saveBuyerLogInline('${b.id}')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-4 py-1 rounded-lg">
-                                                <i class="fa-solid fa-check"></i> 新增互動紀錄
-                                            </button>
+                                            <button type="button" id="btnCancelBLog_${b.id}" onclick="cancelBuyerLogEditInline('${b.id}')" class="hidden text-xs bg-slate-200 text-slate-700 px-3 py-1 rounded-lg">取消</button>
+                                            <button type="button" id="btnSaveBLog_${b.id}" onclick="saveBuyerLogInline('${b.id}')" class="bg-slate-800 text-white text-xs font-semibold px-4 py-1 rounded-lg">新增紀錄</button>
                                         </div>
                                     </div>
-
                                     <div class="space-y-2 max-h-[220px] overflow-y-auto pt-1">
                                         ${renderBuyerLogsInlineHtml(b)}
                                     </div>
@@ -882,21 +1011,21 @@
 
         function renderBuyerLogsInlineHtml(buyer) {
             if (!buyer.logs || buyer.logs.length === 0) {
-                return `<div class="text-xs text-slate-400 text-center py-3">目前尚無互動紀錄，可於上方輸入框新增</div>`;
+                return `<div class="text-xs text-slate-400 text-center py-2">目前尚無紀錄，可於上方輸入框新增</div>`;
             }
             let html = '';
             buyer.logs.slice().reverse().forEach((log, revIdx) => {
                 const originalIndex = buyer.logs.length - 1 - revIdx;
                 html += `
-                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs">
+                    <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="text-slate-400 font-medium"><i class="fa-regular fa-clock"></i> ${log.date}</span>
+                            <span class="text-slate-400"><i class="fa-regular fa-clock"></i> ${log.date}</span>
                             <div class="flex gap-2">
-                                <button type="button" onclick="startEditBuyerLogInline('${buyer.id}', ${originalIndex})" class="text-[11px] text-blue-600 hover:underline font-bold">編輯</button>
-                                <button type="button" onclick="deleteBuyerLogInline('${buyer.id}', ${originalIndex})" class="text-[11px] text-red-500 hover:underline">刪除</button>
+                                <button type="button" onclick="startEditBuyerLogInline('${buyer.id}', ${originalIndex})" class="text-[11px] text-blue-600 font-bold">編輯</button>
+                                <button type="button" onclick="deleteBuyerLogInline('${buyer.id}', ${originalIndex})" class="text-[11px] text-red-500">刪除</button>
                             </div>
                         </div>
-                        <div class="text-slate-700 leading-relaxed break-words">${log.content}</div>
+                        <div class="text-slate-700 break-words">${log.content}</div>
                     </div>
                 `;
             });
@@ -916,7 +1045,7 @@
             window.editingBuyerLogIdx = index;
             const input = document.getElementById(`bLogInput_${buyerId}`);
             input.value = buyer.logs[index].content;
-            document.getElementById(`btnSaveBLog_${buyerId}`).innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 儲存修改內容';
+            document.getElementById(`btnSaveBLog_${buyerId}`).innerText = '儲存修改';
             document.getElementById(`btnCancelBLog_${buyerId}`).classList.remove('hidden');
             input.focus();
         };
@@ -928,8 +1057,6 @@
 
         window.clearBuyerFilters = function() {
             document.getElementById('filterBuyerNeed').value = '';
-            document.getElementById('filterBuyerMinPrice').value = '';
-            document.getElementById('filterBuyerMaxPrice').value = '';
             window.renderBuyers();
         };
     </script>
